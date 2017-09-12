@@ -46,7 +46,7 @@ class Database{
         }
     }
 
-    public function addItem($nameItem){
+    public function addItem(){
         if(isset($_POST['name'])) {
             $name = trim($_POST['name']);
 
@@ -73,60 +73,46 @@ class Database{
 
 
 
-    public function markItem($as,$item){
+    public function markItem($item){
 
-        switch ($as) {
-            case 'done':
-                $doneQuery = $this->datab->prepare("
+
+        $doneQuery = $this->datab->prepare("
             UPDATE items
             SET done = 1
             WHERE id = :item
             AND user = :user
         ");
 
-                $doneQuery->execute([
-                    'item' => $item,
-                    'user' => $_SESSION['user_id']
-                ]);
-                break;
-        }
+        $doneQuery->execute([
+            'item' => $item,
+            'user' => $_SESSION['user_id']
+        ]);
+
+
 
 
         header('Location: index.php');
     }
 
-    public function delItem($as,$item){
+    public function delItem($item){
 
-        switch ($as) {
-            case 'delete':
-                $doneQuery = $this->datab->prepare("
-				DELETE FROM items
-				WHERE id =:item
-				AND user = :user
-			");
 
-                $doneQuery->execute([
-                    'item' => $item,
-                    'user' => $_SESSION['user_id']
-                ]);
-                break;
-        }
+        $doneQuery = $this->datab->prepare("
+        DELETE FROM items
+        WHERE id =:item
+        AND user = :user
+        ");
 
+        $doneQuery->execute([
+            'item' => $item,
+            'user' => $_SESSION['user_id']
+        ]);
 
         header('Location: index.php');
     }
 }
 
-$db = new Database();
 
-if(isset($_GET['as'], $_GET['item'])) {
-    if($_GET['as'] == 'done'){
-        $db->markItem($_GET['as'],$_GET['item']);
-    }
-    if($_GET['as'] == 'delete'){
-        $db->delItem($_GET['as'],$_GET['item']);
-    }
-}
 
 if(!isset($_SESSION['user_id'])){
     die('Вы не вошли в аккаунт.');

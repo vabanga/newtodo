@@ -6,10 +6,18 @@ $db = new Database();
 
 $items = $db->getItems();
 
-if($_POST['add']){
+if(!empty($_POST['add'])){
     $db->addItem($_POST['name']);
 }
 
+if(isset($_GET['as'], $_GET['item'])) {
+    if($_GET['as'] == 'done'){
+        $db->markItem($_GET['item']);
+    }
+    if($_GET['as'] == 'delete'){
+        $db->delItem($_GET['item']);
+    }
+}
 
 
 ?>
@@ -36,12 +44,12 @@ if($_POST['add']){
 			<?php foreach ($items as $item): ?>
 				<li>
 					<span class="item<?php echo $item['done'] ? ' done' : ''; ?>">
-						<?php echo $item['name'];?>
+						<?= $item['name'];?>
 					</span>
 					<?php if(!$item['done']): ?>
-						<a href="Database.php?as=done&item=<?php echo $item['id']; ?>" class="done-button">Выполнено</a>
+						<a href="index.php?as=done&item=<?php echo $item['id']; ?>" class="done-button">Выполнено</a>
 					<?php endif; ?>
-					<a href="Database.php?as=delete&item=<?php echo $item['id']; ?>" class="delete-button">Удалить</a>
+					<a href="index.php?as=delete&item=<?php echo $item['id']; ?>" class="delete-button">Удалить</a>
 				</li>
 			<?php endforeach; ?>
 		</ul>
